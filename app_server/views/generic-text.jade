@@ -7,7 +7,4 @@ block content
 				h1= title
 	.row
 		.col-md-6.col-sm-12
-			p
-				| #{english_text}
-				| <br/><br/>
-				| #{other_text}
+			p !{(content).replace(/\n/g, '<br/>')}
