@@ -62,34 +62,14 @@ var renderReviewForm = function(req, res, locDetail) {
         title: 'Review ' + locDetail.name + ' on Loc8r',
         pageHeader: {
             title: 'Review ' + locDetail.name
-        }
+        },
+        error: req.query.err
     });
 }
 
 /* GET 'home' page */
 module.exports.homelist = function(req, res) {
-    var requestOptions, path;
-    path = '/api/locations';
-    requestOptions = {
-        url: apiOptions.server + path,
-        method: "GET",
-        json: {},
-        qs: {
-            lng : -0.9690884,
-            lat : 51.4550411,
-            maxDistance : 200000000000
-        }
-    };
-    request(requestOptions, function(err, response, body) {
-        var i, data;
-        data = body;
-        if (response.statusCode === 200 && data.length) {
-            for (i = 0; i < data.length; i++) {
-                data[i].distance = _formatDistance(data[i].distance);
-            }
-        }
-        renderHomepage(req, res, data);
-    });
+    renderHomepage(req, res);
 };
 /* GET 'Location info' page */
 var getLocationInfo = function(req, res, callback) {
@@ -139,9 +119,15 @@ module.exports.doAddReview = function(req, res) {
         method: "POST",
         json: postData
     };
+    if (!postData.author || !postData.rating || !postData.reviewText) {
+        res.redirect('/location/' + locationid + '/review/new?err=val');
+        return;
+    }
     request(requestOptions, function(err, response, body) {
         if (response.statusCode === 201) {
             res.redirect('/location/' + locationid);
+        } else if (response.statusCode === 400 && body.name && body.name === "ValidationError") {
+            res.redirect('/location/' + locationid + '/review/new?err=val');
         } else {
             _showError(req, res, response.statusCode);
         }
