@@ -13,3 +13,10 @@
 .reviewTimestamp {
 	color: #ccc;
 }
+#filter {
+	margin-left: 4px;
+	margin-bottom: 8px;
+}
+.label {
+	margin-right: 4px;
+}

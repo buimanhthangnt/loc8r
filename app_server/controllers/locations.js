@@ -1,15 +1,6 @@
 var request = require('request');
 var apiOptions = {server: "http://localhost:3000"};
-var renderHomepage = function(req, res, responseBody) {
-    var message;
-    if (!(responseBody instanceof Array)) {
-        message = "API look up error.";
-        responseBody = [];
-    } else {
-        if (!responseBody.length) {
-            message = "No places nearby found.";
-        }
-    }
+var renderHomepage = function(req, res) {
     res.render('locations-list', {
         title: 'Loc8r - find a place to work with wifi',
         pageHeader: {
@@ -17,8 +8,6 @@ var renderHomepage = function(req, res, responseBody) {
             strapline: 'Find places to work with wifi near you!'
         },
         sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you're looking for.",
-        locations: responseBody,
-        message: message
     });
 }
 var _formatDistance = function(distance) {
@@ -63,7 +52,8 @@ var renderReviewForm = function(req, res, locDetail) {
         pageHeader: {
             title: 'Review ' + locDetail.name
         },
-        error: req.query.err
+        error: req.query.err,
+        url: req.originalUrl
     });
 }
 
